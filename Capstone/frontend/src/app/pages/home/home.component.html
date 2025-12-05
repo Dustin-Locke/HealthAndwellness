@@ -1,0 +1,105 @@
+<!-- Welcome Header -->
+<section class="welcome-header">
+  <h1 class="greeting">Hi, {{ firstName() }}! 👋</h1>
+  <p class="date">{{ today | date : 'EEEE, MMMM d, y' }}</p>
+</section>
+
+<section class="stats">
+  <div class="card stat">
+    <div class="title">Calories in</div>
+    <div class="value">{{ formatNumber(caloriesIn()) }}</div>
+  </div>
+
+  <div class="card stat">
+    <div class="title">Calories out</div>
+    <div class="value">{{ formatNumber(caloriesOut()) }}</div>
+  </div>
+
+  <div class="card stat">
+    <div class="title">Latest Weigh-in</div>
+    <div class="value">{{ formatNumber(latestWeighIn()) }} lbs</div>
+  </div>
+</section>
+
+<!-- Progress Summary Cards -->
+<section class="progress-cards">
+  <div class="card progress-card">
+    <div class="progress-label">Net Calories</div>
+    <div class="progress-value" [class.negative]="netCalories() < 0">
+      {{ netCalories() > 0 ? '+' : '' }}{{ formatNumber(netCalories()) }}
+    </div>
+    <div class="progress-subtitle">
+      {{ formatNumber(caloriesIn()) }} in - {{ formatNumber(caloriesOut()) }} out
+    </div>
+  </div>
+
+  <div class="card progress-card">
+    <div class="progress-label">Weight Change</div>
+    <div
+      class="progress-value"
+      [class.negative]="weightChange() > 0"
+      [class.positive]="weightChange() < 0"
+    >
+      {{ weightChange() > 0 ? '+' : '' }}{{ formatNumber(weightChange()) }} lbs
+    </div>
+    <div class="progress-subtitle">Last 7 days</div>
+  </div>
+
+  <div class="card progress-card">
+    <div class="progress-label">Goal Progress</div>
+    <div class="progress-value">{{ goalProgress() }}%</div>
+    <div class="progress-subtitle">{{ formatNumber(remainingWeight()) }} lbs to goal</div>
+  </div>
+
+  <div class="card progress-card">
+    <div class="progress-label">Days Active</div>
+    <div class="progress-value">{{ daysActive() }}</div>
+    <div class="progress-subtitle">Last 7 days</div>
+  </div>
+</section>
+
+<!-- Charts with Labels -->
+<section class="card">
+  <h2>History Snapshot</h2>
+  <div class="charts">
+    <div class="chart">
+      <div class="chart-title">Weight trend (last 7 days)</div>
+      <div class="simple-bar-chart">
+        <div class="bar-item" *ngFor="let weight of weightHistory(); let i = index">
+          <div class="bar-value" *ngIf="weight > 0">{{ formatNumber(weight) }}</div>
+          <div class="bar-value empty" *ngIf="weight === 0">—</div>
+          <div class="bar-container">
+            <div class="bar blue" [style.height.%]="getWeightBarHeight(i)" *ngIf="weight > 0"></div>
+          </div>
+          <div class="bar-label">{{ getDayLabel(i) }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart">
+      <div class="chart-title">Net calories (last 7 days)</div>
+      <div class="simple-bar-chart">
+        <div class="bar-item" *ngFor="let cal of rawCaloriesHistory(); let i = index">
+          <div class="bar-value" [class.negative]="cal < 0">
+            {{ cal > 0 ? '+' : '' }}{{ formatNumber(cal) }}
+          </div>
+          <div class="bar-container">
+            <div
+              class="bar"
+              [class.green]="cal >= 0"
+              [class.red]="cal < 0"
+              [style.height.%]="getCaloriesBarHeight(i)"
+            ></div>
+          </div>
+          <div class="bar-label">{{ getDayLabel(i) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Quote Section -->
+<section class="quote card">
+  <span class="quote-mark">"</span>
+  <span>{{ quote }}</span>
+</section>

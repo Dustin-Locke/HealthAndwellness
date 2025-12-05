@@ -1,0 +1,119 @@
+.auth-wrap {
+  max-width: 1000px;
+  margin: 60px auto;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 28px;
+  padding: 0 26px;
+}
+
+.auth-left {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 10px 26px rgba(15, 37, 74, 0.08);
+}
+
+.auth-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  box-shadow: 0 10px 26px rgba(15, 37, 74, 0.08);
+}
+
+.auth-card h2 {
+  margin: 0 0 8px 0;
+}
+
+.auth-form {
+  max-width: 480px;
+  margin: 40px auto;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 10px 26px rgba(15, 37, 74, 0.08);
+}
+
+form {
+  width: 100%;
+}
+
+.success-message {
+  color: green;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+/* ---------- Modal header ---------- */
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* ---------- Modal body / steps ---------- */
+.modal-step {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-step p {
+  margin: 0 0 8px 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* Material form-fields full width */
+.full {
+  width: 100%;
+}
+
+/* ---------- Modal footer / actions ---------- */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+/* Optional: Error text styling */
+.error {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .modal {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 980px) {
+  .auth-wrap {
+    grid-template-columns: 1fr;
+  }
+}

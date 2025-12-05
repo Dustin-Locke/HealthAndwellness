@@ -1,0 +1,159 @@
+<div class="auth-wrap">
+  <div class="auth-left">
+    <h1>Wellness Made Simple</h1>
+    <p>Log your day, stay consistent, and reach goals with ease.</p>
+  </div>
+
+  <mat-card class="auth-card">
+    <h2>Sign In</h2>
+
+    <form (ngSubmit)="submit()">
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          type="email"
+          name="email"
+          required
+          [(ngModel)]="email"
+          autocomplete="email"
+        />
+        <mat-icon matSuffix>mail</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          type="password"
+          name="password"
+          required
+          [(ngModel)]="password"
+          autocomplete="current-password"
+        />
+        <mat-icon matSuffix>lock</mat-icon>
+      </mat-form-field>
+      <p *ngIf="passwordResetSuccess" class="success-message">
+        {{ passwordResetSuccess }}
+      </p>
+      <div class="forgot-password">
+        <a href="#" (click)="forgotPassword($event)">Forgot password?</a>
+      </div>
+
+      <button matButton="filled" color="primary" class="full" type="submit">Log in</button>
+
+      <div class="err" *ngIf="err">{{ err }}</div>
+
+      <div class="muted small">Don't have an account?</div>
+      <a matButton="outlined" color="accent" routerLink="/register" class="full">
+        Create Account
+      </a>
+    </form>
+  </mat-card>
+</div>
+
+<!-- Forgot Password Modal -->
+<app-modal [show]="showForgotModal" (close)="closeForgotModal()">
+
+  <!-- ---------- MODAL HEADER ---------- -->
+  <div modal-header>
+    <h2 id="modal-title" class="modal-title">
+      <mat-icon>lock_reset</mat-icon>
+      Forgot Password
+    </h2>
+  </div>
+
+  <!-- ---------- GLOBAL ERROR/SUCCESS DISPLAY ---------- -->
+  <p class="error" *ngIf="fpError">{{ fpError || ''  }}</p>
+  <p class="success-message" *ngIf="passwordResetSuccess">{{ passwordResetSuccess || ''  }}</p>
+
+  <!-- ---------- MODAL BODY (steps) ---------- -->
+  <div class="modal-step">
+
+    <!-- STEP 1: Enter Email -->
+    <div *ngIf="fpStep === 1">
+      <p>Enter your email to receive a verification code.</p>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          #fpEmailInput
+          type="email"
+          [(ngModel)]="fpEmail"
+          autocomplete="email"
+        />
+        <mat-icon matSuffix>mail</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- STEP 2: Enter Verification Code -->
+    <div *ngIf="fpStep === 2">
+      <p>We sent a code to <strong>{{ fpEmail }}</strong>.</p>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Verification Code</mat-label>
+        <input
+          matInput
+          #fpCodeInput
+          type="text"
+          maxlength="6"
+          [(ngModel)]="fpCode"
+        />
+        <mat-icon matSuffix>verified</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- STEP 3: Reset Password -->
+    <div *ngIf="fpStep === 3">
+      <p>Enter a new password for <strong>{{ fpEmail }}</strong></p>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>New Password</mat-label>
+        <input
+          matInput
+          type="password"
+          [(ngModel)]="newPassword"
+        />
+        <mat-icon matSuffix>lock</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Confirm Password</mat-label>
+        <input
+          matInput
+          type="password"
+          [(ngModel)]="confirmPassword"
+        />
+        <mat-icon matSuffix>lock</mat-icon>
+      </mat-form-field>
+
+      <p class="error" *ngIf="fpError">{{ fpError }}</p>
+    </div>
+
+  </div>
+
+  <!-- ---------- MODAL ACTIONS ---------- -->
+  <div modal-actions>
+
+    <!-- Actions for STEP 1 -->
+    <ng-container *ngIf="fpStep === 1">
+      <button mat-stroked-button (click)="closeForgotModal()">Cancel</button>
+      <button mat-raised-button color="primary" (click)="sendFpCode()">Send Code</button>
+    </ng-container>
+
+    <!-- Actions for STEP 2 -->
+    <ng-container *ngIf="fpStep === 2">
+      <button mat-stroked-button (click)="resendFpCode()">Resend Code</button>
+      <button mat-raised-button color="primary" (click)="verifyFpCode()">Submit Code</button>
+    </ng-container>
+
+    <!-- Actions for STEP 3 -->
+    <ng-container *ngIf="fpStep === 3">
+      <button mat-stroked-button (click)="closeForgotModal()">Cancel</button>
+      <button mat-raised-button color="primary" (click)="submitNewPassword()">Reset Password</button>
+    </ng-container>
+
+  </div>
+
+</app-modal>

@@ -1,0 +1,28 @@
+<header class="topbar">
+  <div class="container">
+    <div class="row">
+      <h1>Health & Wellness</h1>
+      <div class="right-side" *ngIf="auth.isLoggedIn && !isAuthRoute">
+        <div class="today">{{ today | date : 'EEE, MMM d' }}</div>
+        <button class="logout-btn" (click)="onLogout()">Logout</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Hide all nav tabs on auth pages or when logged out -->
+<nav class="tabs" *ngIf="auth.isLoggedIn && !isAuthRoute">
+  <div class="container">
+    <a
+      routerLink="/"
+      class="tab"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      >Home</a
+    >
+    <a routerLink="/history" class="tab" routerLinkActive="active">History</a>
+    <a routerLink="/log" class="tab" routerLinkActive="active">Log</a>
+    <a routerLink="/reminders" class="tab" routerLinkActive="active">Reminders</a>
+    <a routerLink="/profile" class="tab" routerLinkActive="active">Profile</a>
+  </div>
+</nav>

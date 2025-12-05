@@ -1,0 +1,353 @@
+/* ===============================
+   Design Tokens
+================================ */
+:root {
+  --bg: #eaf2fe;
+  --panel: #f6f9ff;
+  --card: #ffffff;
+  --border: #cfe0ff;
+  --text: #0f254a;
+  --muted: #6b7a99;
+  --accent: #3b82f6;
+  --accent-2: #60a5fa;
+  --accent-3: #93c5fd;
+  --red: #ef4444;
+  --green: #22c55e;
+}
+
+/* ===============================
+   Reset & Base
+================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* Angular Material base font fallback */
+body {
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+/* ===============================
+   Layout Helpers
+================================ */
+.shell {
+  min-height: 100vh;
+  background: radial-gradient(900px 420px at 8% -12%, rgba(59, 130, 246, 0.12) 0%, transparent 60%),
+    radial-gradient(900px 520px at 108% -18%, rgba(96, 165, 250, 0.12) 0%, transparent 60%);
+}
+
+.wrap,
+.container {
+  max-width: 1100px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.wrap {
+  margin: 24px auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ===============================
+   Cards & Panels
+================================ */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 10px 26px rgba(15, 37, 74, 0.08);
+}
+.card h2 {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+
+/* ===============================
+   Material Styles
+================================ */
+
+mat-card {
+  padding: 20px;
+}
+
+mat-card-title {
+  padding-bottom: 20px;
+}
+
+/* ===============================
+   Stats & Charts (unchanged visuals)
+================================ */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  margin: 20px 0 40px;
+  align-items: stretch;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: var(--panel);
+  border-radius: 16px;
+  min-height: 180px;
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.12);
+}
+.stat .title {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.stat .value,
+.stat .weight {
+  font-weight: 900;
+  font-size: 36px;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.ring {
+  --size: 78px;
+  --track: #e6efff;
+  --color: var(--accent);
+  width: var(--size);
+  height: var(--size);
+  margin-top: 6px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, #fff 72%, transparent 73%),
+    conic-gradient(var(--color) var(--pct), var(--track) 0);
+  border: 1px solid var(--border);
+}
+.ring.green {
+  --color: var(--green);
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.chart-title {
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.bar-chart {
+  height: 160px;
+  background: linear-gradient(180deg, #f8fbff, #eef5ff);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+.bar {
+  flex: 1;
+  min-width: 18px;
+  background: linear-gradient(180deg, var(--accent-2), var(--accent));
+  border-radius: 8px 8px 4px 4px;
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.25);
+}
+.bar.alt {
+  background: linear-gradient(180deg, var(--accent-3), var(--accent));
+}
+
+/* ===============================
+   Lists & Misc
+================================ */
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.list li {
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+.list li:last-child {
+  border-bottom: none;
+}
+.list .log-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.muted {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.reminders {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 18px;
+}
+.reminders li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 2px 0;
+}
+.reminders input {
+  width: 18px;
+  height: 18px;
+}
+.reminders .done {
+  color: #9aa8bf;
+  text-decoration: line-through;
+}
+
+.icon {
+  background: #fff;
+  border: 1px solid var(--border);
+  color: var(--red);
+  border-radius: 10px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.quote {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  color: #10305f;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  background: #e7f1ff;
+}
+.quote-mark {
+  font-size: 28px;
+  color: #ffb703;
+}
+
+/* ===============================
+   Forms & Inputs
+================================ */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 480px;
+}
+
+.input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 11px 12px;
+  background: #f7faff;
+  color: var(--text);
+  outline: none;
+}
+.input:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+.input.time {
+  width: 140px;
+}
+
+/* Quick-add row retained for other pages */
+.quick-add {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 22px;
+}
+
+/* ===============================
+   Buttons & Links
+================================ */
+.btn {
+  background: linear-gradient(180deg, #3b82f6 0%, #60a5fa 100%);
+  color: #fff;
+  border: 0;
+  border-radius: 12px;
+  padding: 9px 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(59, 130, 246, 0.18);
+}
+.btn.ghost {
+  background: transparent;
+  border: 1px solid var(--accent-2);
+  color: var(--accent);
+}
+
+.center {
+  text-align: center;
+  display: inline-block;
+  text-decoration: none !important;
+}
+.end {
+  justify-content: flex-end;
+}
+.cta-link {
+  text-decoration: none !important;
+}
+
+/* ===============================
+   Feedback
+================================ */
+.err {
+  color: var(--red);
+  font-weight: 600;
+}
+
+/* ===============================
+   Responsive
+================================ */
+@media (max-width: 980px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .charts {
+    grid-template-columns: 1fr;
+  }
+}

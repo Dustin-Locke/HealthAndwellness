@@ -1,0 +1,11 @@
+mat-card {
+  padding: 20px;
+}
+
+.toolbar mat-form-field {
+  margin: 0 8px;
+}
+
+.toolbar button {
+  margin-left: 20px;
+}

@@ -1,0 +1,11 @@
+package edu.fscj.cen4940.capstone.dto;
+
+import jakarta.validation.constraints.NotBlank;
+
+public class PasswordUpdateDTO {
+    @NotBlank
+    private String newPassword;
+
+    public String getNewPassword() { return newPassword; }
+    public void setNewPassword(String newPassword) { this.newPassword = newPassword; }
+}

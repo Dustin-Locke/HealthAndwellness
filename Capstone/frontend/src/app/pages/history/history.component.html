@@ -1,0 +1,223 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>History</mat-card-title>
+  </mat-card-header>
+
+  <div class="toolbar">
+    <mat-form-field appearance="outline">
+      <mat-label>From</mat-label>
+      <input
+        matInput
+        [matDatepicker]="s"
+        [value]="start()"
+        (dateChange)="applyRange($event.value, undefined)"
+      />
+      <mat-datepicker-toggle matSuffix [for]="s"></mat-datepicker-toggle>
+      <mat-datepicker #s></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>To</mat-label>
+      <input
+        matInput
+        [matDatepicker]="e"
+        [value]="end()"
+        (dateChange)="applyRange(undefined, $event.value)"
+      />
+      <mat-datepicker-toggle matSuffix [for]="e"></mat-datepicker-toggle>
+      <mat-datepicker #e></mat-datepicker>
+    </mat-form-field>
+
+    <button mat-stroked-button (click)="applyLast7Days()">Last 7 days</button>
+  </div>
+
+  <mat-tab-group>
+    <!-- MEALS TAB -->
+    <mat-tab label="Meals">
+      <!-- Loading spinner -->
+      <div *ngIf="loadingMeals()" style="padding: 20px; text-align: center">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+
+      <!-- Error message -->
+      <div *ngIf="errorMeals()" style="padding: 20px; color: #ef4444">
+        {{ errorMeals() }}
+      </div>
+
+      <!-- Table -->
+      <table mat-table [dataSource]="filteredMeals()" *ngIf="!loadingMeals() && !errorMeals()">
+        <!-- Date -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let r">{{ r.date | date : 'shortDate' }}</td>
+        </ng-container>
+
+        <!-- Meal type -->
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>Meal</th>
+          <td mat-cell *matCellDef="let r">{{ r.type }}</td>
+        </ng-container>
+
+        <!-- Item -->
+        <ng-container matColumnDef="item">
+          <th mat-header-cell *matHeaderCellDef>Item</th>
+          <td mat-cell *matCellDef="let r">{{ r.item }}</td>
+        </ng-container>
+
+        <!-- Portion (servings × amount + unit) -->
+        <ng-container matColumnDef="portion">
+          <th mat-header-cell *matHeaderCellDef>Portion</th>
+          <td mat-cell *matCellDef="let r">
+            {{ r.servings }} × {{ r.amount }} {{ r.unit | lowercase }}
+          </td>
+        </ng-container>
+
+        <!-- Calories -->
+        <ng-container matColumnDef="kcal">
+          <th mat-header-cell *matHeaderCellDef>Calories</th>
+          <td mat-cell *matCellDef="let r">{{ r.kcal }}</td>
+        </ng-container>
+
+        <!-- Delete -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let r">
+            <button mat-icon-button color="warn" (click)="deleteMealItem(r)" title="Delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr
+          mat-header-row
+          *matHeaderRowDef="['date', 'type', 'item', 'portion', 'kcal', 'actions']"
+        ></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: ['date', 'type', 'item', 'portion', 'kcal', 'actions']"
+        ></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="6" style="text-align: center; padding: 20px">
+            No meals logged in this date range
+          </td>
+        </tr>
+      </table>
+    </mat-tab>
+
+    <!-- EXERCISE TAB -->
+    <mat-tab label="Exercise">
+      <div *ngIf="loadingExercises()" style="padding: 20px; text-align: center">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+
+      <div *ngIf="errorExercises()" style="padding: 20px; color: #ef4444">
+        {{ errorExercises() }}
+      </div>
+
+      <table
+        mat-table
+        [dataSource]="filteredExercises()"
+        *ngIf="!loadingExercises() && !errorExercises()"
+      >
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let r">{{ r.date | date : 'shortDate' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="kind">
+          <th mat-header-cell *matHeaderCellDef>Exercise</th>
+          <td mat-cell *matCellDef="let r">{{ r.kind }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef>Amount</th>
+          <td mat-cell *matCellDef="let r">{{ r.amount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="kcal">
+          <th mat-header-cell *matHeaderCellDef>kcal</th>
+          <td mat-cell *matCellDef="let r">{{ r.kcal }}</td>
+        </ng-container>
+
+        <!-- Delete -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let r">
+            <button mat-icon-button color="warn" (click)="deleteExerciseItem(r)" title="Delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['date', 'kind', 'amount', 'kcal', 'actions']"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: ['date', 'kind', 'amount', 'kcal', 'actions']"
+        ></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="5" style="text-align: center; padding: 20px">
+            No exercises logged in this date range
+          </td>
+        </tr>
+      </table>
+    </mat-tab>
+
+    <!-- WEIGH-INS TAB -->
+    <mat-tab label="Weigh-Ins">
+      <div *ngIf="loadingWeighIns()" style="padding: 20px; text-align: center">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+
+      <div *ngIf="errorWeighIns()" style="padding: 20px; color: #ef4444">
+        {{ errorWeighIns() }}
+      </div>
+
+      <table
+        mat-table
+        [dataSource]="filteredWeigh()"
+        *ngIf="!loadingWeighIns() && !errorWeighIns()"
+      >
+        <!-- Date -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let r">{{ r.date | date : 'shortDate' }}</td>
+        </ng-container>
+
+        <!-- Weight -->
+        <ng-container matColumnDef="weight">
+          <th mat-header-cell *matHeaderCellDef>Weight (lb)</th>
+          <td mat-cell *matCellDef="let r">{{ r.weight | number : '1.1-1' }}</td>
+        </ng-container>
+
+        <!-- Notes -->
+        <ng-container matColumnDef="notes">
+          <th mat-header-cell *matHeaderCellDef>Notes</th>
+          <td mat-cell *matCellDef="let r">
+            {{ r.notes || '—' }}
+          </td>
+        </ng-container>
+
+        <!-- Delete -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let r">
+            <button mat-icon-button color="warn" (click)="deleteWeighInItem(r)" title="Delete">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['date', 'weight', 'notes', 'actions']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['date', 'weight', 'notes', 'actions']"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="4" style="text-align: center; padding: 20px">
+            No weigh-ins recorded in this date range
+          </td>
+        </tr>
+      </table>
+    </mat-tab>
+  </mat-tab-group>
+</mat-card>

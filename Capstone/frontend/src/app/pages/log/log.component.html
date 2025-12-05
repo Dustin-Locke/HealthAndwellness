@@ -1,0 +1,336 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Log</mat-card-title>
+  </mat-card-header>
+  <mat-tab-group>
+    <!-- MEAL TAB -->
+    <mat-tab label="Meal">
+      <div class="section">
+        <form [formGroup]="mealForm" class="grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Date</mat-label>
+            <input matInput [matDatepicker]="dp1" formControlName="date" />
+            <mat-datepicker-toggle matSuffix [for]="dp1"></mat-datepicker-toggle>
+            <mat-datepicker #dp1></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Meal Type</mat-label>
+            <mat-select formControlName="type">
+              <mat-option value="BREAKFAST">Breakfast</mat-option>
+              <mat-option value="LUNCH">Lunch</mat-option>
+              <mat-option value="DINNER">Dinner</mat-option>
+              <mat-option value="SNACK">Snack</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Dynamic MEAL items -->
+          <div class="items" formArrayName="items">
+            <div
+              class="item-row"
+              *ngFor="let row of mealItems.controls; let i = index; trackBy: trackByUid"
+              [formGroupName]="i"
+            >
+              <input type="hidden" formControlName="uid" />
+
+              <!-- Food -->
+              <mat-form-field appearance="outline">
+                <mat-label>Food</mat-label>
+                <input
+                  matInput
+                  formControlName="food"
+                  placeholder="e.g., Chicken Breast"
+                  [matAutocomplete]="autoFood"
+                  (input)="onFoodSearch(i, $event)"
+                />
+                <mat-autocomplete
+                  #autoFood="matAutocomplete"
+                  [displayWith]="displayFoodName"
+                  (optionSelected)="onFoodSelected(i, $event)"
+                >
+                  <mat-option *ngFor="let food of foodSuggestions[i] || []" [value]="food">
+                    {{ food.name }} ({{ food.calories }} kcal per {{ food.amount }}{{ food.unit }})
+                  </mat-option>
+                </mat-autocomplete>
+                <mat-error
+                  *ngIf="
+                    mealItems.at(i).get('food')?.hasError('required') &&
+                    mealItems.at(i).get('food')?.touched
+                  "
+                >
+                  Food is required.
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Amount (number) -->
+              <mat-form-field appearance="outline">
+                <mat-label>Amount</mat-label>
+                <input matInput type="number" formControlName="amount" placeholder="e.g., 150" />
+                <mat-error *ngIf="mealItems.at(i).get('amount')?.hasError('required')">
+                  Amount is required.
+                </mat-error>
+                <mat-error *ngIf="mealItems.at(i).get('amount')?.hasError('min')">
+                  Must be greater than 0.
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Unit (enum) -->
+              <mat-form-field appearance="outline">
+                <mat-label>Unit</mat-label>
+                <mat-select formControlName="unit">
+                  <mat-option value="GRAM">Gram (g)</mat-option>
+                  <mat-option value="KILOGRAM">Kilogram (kg)</mat-option>
+                  <mat-option value="OUNCE_WEIGHT">Ounce (oz)</mat-option>
+                  <mat-option value="POUND">Pound (lb)</mat-option>
+                  <mat-option value="MILLILITER">Milliliter (ml)</mat-option>
+                  <mat-option value="LITER">Liter (l)</mat-option>
+                  <mat-option value="TEASPOON">Teaspoon (tsp)</mat-option>
+                  <mat-option value="TABLESPOON">Tablespoon (tbsp)</mat-option>
+                  <mat-option value="CUP">Cup</mat-option>
+                  <mat-option value="OUNCE_VOL">Fluid Ounce (fl oz)</mat-option>
+                </mat-select>
+                <mat-error *ngIf="mealItems.at(i).get('unit')?.hasError('required')">
+                  Unit is required.
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Servings (number) -->
+              <mat-form-field appearance="outline">
+                <mat-label>Servings</mat-label>
+                <input matInput type="number" formControlName="servings" placeholder="e.g., 1" />
+                <mat-error *ngIf="mealItems.at(i).get('servings')?.hasError('required')">
+                  Servings is required.
+                </mat-error>
+                <mat-error *ngIf="mealItems.at(i).get('servings')?.hasError('min')">
+                  Must be greater than 0.
+                </mat-error>
+              </mat-form-field>
+
+              <!-- kcal (number) -->
+              <mat-form-field appearance="outline">
+                <mat-label>kcal</mat-label>
+                <input matInput type="number" formControlName="kcal" placeholder="e.g., 248" />
+                <mat-error *ngIf="mealItems.at(i).get('kcal')?.hasError('required')">
+                  kcal is required.
+                </mat-error>
+                <mat-error *ngIf="mealItems.at(i).get('kcal')?.hasError('min')">
+                  Must be greater than 0.
+                </mat-error>
+              </mat-form-field>
+
+              <button
+                mat-stroked-button
+                color="warn"
+                type="button"
+                (click)="removeMealRow(i)"
+                aria-label="Delete Meal Row"
+              >
+                <mat-icon>delete</mat-icon>
+                Delete
+              </button>
+            </div>
+
+            <div class="item-actions">
+              <button class="add-btn" mat-stroked-button type="button" (click)="addMealRowClick()">
+                <mat-icon>add</mat-icon>
+                Add Meal Item
+              </button>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button mat-flat-button color="primary" type="button" (click)="saveMeal()">
+              Save Meal
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-tab>
+
+    <!-- EXERCISE TAB -->
+    <mat-tab label="Exercise">
+      <div class="section">
+        <!-- Loading indicator for exercises -->
+        <div *ngIf="loadingExercises" style="padding: 20px; text-align: center">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Loading exercises...</p>
+        </div>
+
+        <form [formGroup]="exerciseForm" class="grid" *ngIf="!loadingExercises">
+          <mat-form-field appearance="outline">
+            <mat-label>Date</mat-label>
+            <input matInput [matDatepicker]="dp2" formControlName="date" />
+            <mat-datepicker-toggle matSuffix [for]="dp2"></mat-datepicker-toggle>
+            <mat-datepicker #dp2></mat-datepicker>
+          </mat-form-field>
+
+          <!-- Dynamic EXERCISE items -->
+          <div class="items" formArrayName="items">
+            <div
+              class="item-row"
+              *ngFor="let row of exerciseItems.controls; let i = index; trackBy: trackByUid"
+              [formGroupName]="i"
+            >
+              <input type="hidden" formControlName="uid" />
+
+              <!-- Exercise Selection -->
+              <mat-form-field appearance="outline">
+                <mat-label>Exercise</mat-label>
+                <mat-select formControlName="exerciseId">
+                  <mat-option *ngFor="let ex of availableExercises" [value]="ex.id">
+                    {{ ex.name }} ({{ ex.type }})
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="exerciseItems.at(i).get('exerciseId')?.hasError('required')">
+                  Exercise is required.
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Duration -->
+              <mat-form-field appearance="outline">
+                <mat-label>Duration (minutes) - optional</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="durationMinutes"
+                  placeholder="e.g., 30"
+                />
+                <mat-hint>For cardio/aerobic exercises</mat-hint>
+                <mat-error *ngIf="exerciseItems.at(i).get('durationMinutes')?.hasError('min')">
+                  Must be positive.
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Reps -->
+              <mat-form-field appearance="outline">
+                <mat-label>Reps - optional</mat-label>
+                <input matInput type="number" formControlName="reps" placeholder="e.g., 10" />
+                <mat-hint>For strength training</mat-hint>
+                <mat-error *ngIf="exerciseItems.at(i).get('reps')?.hasError('min')">
+                  Must be at least 1.
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Sets -->
+              <mat-form-field appearance="outline">
+                <mat-label>Sets - optional</mat-label>
+                <input matInput type="number" formControlName="sets" placeholder="e.g., 3" />
+                <mat-hint>For strength training</mat-hint>
+                <mat-error *ngIf="exerciseItems.at(i).get('sets')?.hasError('min')">
+                  Must be at least 1.
+                </mat-error>
+              </mat-form-field>
+
+              <!-- Intensity -->
+              <mat-form-field appearance="outline">
+                <mat-label>Intensity</mat-label>
+                <mat-select formControlName="intensity">
+                  <mat-option value="LIGHT">Light</mat-option>
+                  <mat-option value="MODERATE">Moderate</mat-option>
+                  <mat-option value="VIGOROUS">Vigorous</mat-option>
+                </mat-select>
+                <mat-error *ngIf="exerciseItems.at(i).get('intensity')?.hasError('required')">
+                  Intensity is required.
+                </mat-error>
+              </mat-form-field>
+
+              <button
+                mat-stroked-button
+                color="warn"
+                type="button"
+                (click)="removeExerciseRow(i)"
+                aria-label="Delete Exercise Row"
+              >
+                <mat-icon>delete</mat-icon>
+                Delete
+              </button>
+            </div>
+
+            <div class="item-actions">
+              <button
+                class="add-btn"
+                mat-stroked-button
+                type="button"
+                (click)="addExerciseRowClick()"
+              >
+                <mat-icon>add</mat-icon>
+                Add Exercise
+              </button>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button
+              mat-flat-button
+              color="primary"
+              type="button"
+              (click)="saveExercise()"
+              [disabled]="savingExercise"
+            >
+              <mat-spinner
+                diameter="20"
+                *ngIf="savingExercise"
+                style="display: inline-block; margin-right: 8px"
+              ></mat-spinner>
+              {{ savingExercise ? 'Saving...' : 'Save Exercise' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-tab>
+
+    <!-- WEIGH-IN TAB -->
+    <mat-tab label="Weigh-In">
+      <div class="section">
+        <form [formGroup]="weighInForm" class="grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Date</mat-label>
+            <input matInput [matDatepicker]="dp3" formControlName="date" />
+            <mat-datepicker-toggle matSuffix [for]="dp3"></mat-datepicker-toggle>
+            <mat-datepicker #dp3></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Weight (lb)</mat-label>
+            <input matInput type="number" formControlName="weight" placeholder="e.g., 185.5" />
+            <mat-error *ngIf="weighInForm.get('weight')?.hasError('required')">
+              Weight is required
+            </mat-error>
+            <mat-error *ngIf="weighInForm.get('weight')?.hasError('min')">
+              Weight must be greater than 0
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Notes - Optional</mat-label>
+            <textarea
+              matInput
+              formControlName="notes"
+              rows="3"
+              placeholder="Any observations or notes..."
+              maxlength="255"
+            ></textarea>
+            <mat-hint>Max 255 characters</mat-hint>
+          </mat-form-field>
+
+          <div class="actions">
+            <button
+              mat-flat-button
+              color="primary"
+              type="button"
+              (click)="saveWeighIn()"
+              [disabled]="savingWeighIn"
+            >
+              <mat-spinner
+                diameter="20"
+                *ngIf="savingWeighIn"
+                style="display: inline-block; margin-right: 8px"
+              ></mat-spinner>
+              {{ savingWeighIn ? 'Saving...' : 'Save Weigh-In' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</mat-card>

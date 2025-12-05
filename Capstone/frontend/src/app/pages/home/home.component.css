@@ -1,0 +1,217 @@
+/* Welcome Header */
+.welcome-header {
+  text-align: center;
+  padding: 2rem 1rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.greeting {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.date {
+  font-size: 1rem;
+  color: #64748b;
+  margin: 0;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .greeting {
+    font-size: 2rem;
+  }
+
+  .date {
+    font-size: 0.875rem;
+  }
+}
+
+/* Progress Cards Section */
+.progress-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.progress-card {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.progress-label {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.progress-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.25rem;
+}
+
+.progress-value.negative {
+  color: #dc2626;
+}
+
+.progress-value.positive {
+  color: #16a34a;
+}
+
+.progress-subtitle {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* Simple Bar Chart Styles */
+.simple-bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 250px;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: linear-gradient(to top, #f1f5f9 1px, transparent 1px);
+  background-size: 100% 25%;
+}
+
+.bar-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.bar-value {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+  min-height: 1.2rem;
+}
+
+.bar-value.negative {
+  color: #dc2626;
+}
+
+.bar-value.empty {
+  color: #cbd5e1;
+}
+
+.bar-container {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 0.25rem;
+}
+
+.bar {
+  width: 100%;
+  max-width: 60px;
+  min-height: 4px;
+  border-radius: 4px 4px 0 0;
+  transition: all 0.2s ease;
+}
+
+.bar.blue {
+  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.bar.green {
+  background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+}
+
+.bar.red {
+  background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+}
+
+.bar:hover {
+  opacity: 0.85;
+  transform: translateY(-2px);
+}
+
+.bar-label {
+  font-size: 0.7rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.stat .title {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.stat .value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.chart {
+  flex: 1;
+  min-width: 0;
+}
+
+.chart-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.quote {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.125rem;
+  font-style: italic;
+  color: #475569;
+  margin-top: 1.5rem;
+}
+
+.quote-mark {
+  font-size: 3rem;
+  color: #cbd5e1;
+  display: block;
+  line-height: 0.5;
+  margin-bottom: 0.5rem;
+}

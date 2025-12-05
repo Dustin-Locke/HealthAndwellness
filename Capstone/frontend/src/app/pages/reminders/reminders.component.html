@@ -1,0 +1,121 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Reminders</mat-card-title>
+  </mat-card-header>
+
+  <!-- Error Message -->
+  <div class="error-message" *ngIf="error()">
+    <mat-icon>error</mat-icon>
+    {{ error() }}
+  </div>
+
+  <!-- Filter Toolbar -->
+  <div class="toolbar">
+    <mat-button-toggle-group [value]="filter()" (change)="filter.set($event.value)">
+      <mat-button-toggle value="All">All</mat-button-toggle>
+      <mat-button-toggle value="Active">Active</mat-button-toggle>
+      <mat-button-toggle value="Done">Done</mat-button-toggle>
+    </mat-button-toggle-group>
+    <span class="count">{{ filtered().length }} reminder(s)</span>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="loading" *ngIf="loading()">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading reminders...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading() && filtered().length === 0">
+    <mat-icon>notifications_none</mat-icon>
+    <p>No reminders yet. Create one below!</p>
+  </div>
+
+  <!-- Reminders List -->
+  <mat-list *ngIf="!loading() && filtered().length > 0">
+    <mat-list-item *ngFor="let r of filtered()" class="reminder-item" [class.done]="!r.enabled">
+      <mat-icon matListItemIcon [class.done-icon]="!r.enabled">
+        {{ !r.enabled ? 'check_circle' : getTypeIcon(r.type) }}
+      </mat-icon>
+
+      <div matListItemTitle class="reminder-title">
+        <strong>{{ r.title || 'Untitled Reminder' }}</strong>
+      </div>
+
+      <div matListItemLine class="reminder-details">
+        <span class="time">{{ formatTime12Hour(r.notifyTime) }}</span>
+        <span class="separator">•</span>
+        <span class="frequency">{{ formatFrequency(r.frequency) }}</span>
+        <span class="separator" *ngIf="r.notifyDate">•</span>
+        <span class="date" *ngIf="r.notifyDate">{{ r.notifyDate }}</span>
+      </div>
+
+      <div matListItemLine class="reminder-type muted">
+        {{ r.type | lowercase | titlecase }}
+      </div>
+
+      <div matListItemMeta class="actions">
+        <button
+          mat-icon-button
+          (click)="toggle(r)"
+          [matTooltip]="!r.enabled ? 'Mark as active' : 'Mark as done'"
+        >
+          <mat-icon>{{ !r.enabled ? 'undo' : 'check' }}</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="remove(r)" matTooltip="Delete reminder">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </mat-list-item>
+  </mat-list>
+
+  <!-- Add New Reminder Form -->
+  <div class="form-section">
+    <h3>Add New Reminder</h3>
+    <form [formGroup]="newForm" class="new" (ngSubmit)="addReminder()">
+      <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" placeholder="e.g., Morning Workout" />
+        <mat-error *ngIf="newForm.get('title')?.hasError('required')">
+          Title is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Time</mat-label>
+        <input matInput type="time" formControlName="time" />
+        <mat-error *ngIf="newForm.get('time')?.hasError('required')"> Time is required </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Frequency</mat-label>
+        <mat-select formControlName="recurrence">
+          <mat-option value="ONCE">One-time</mat-option>
+          <mat-option value="DAILY">Daily</mat-option>
+          <mat-option value="WEEKLY">Weekly</mat-option>
+          <mat-option value="WEEKDAYS">Weekdays</mat-option>
+          <mat-option value="WEEKENDS">Weekends</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Reminder Type</mat-label>
+        <mat-select formControlName="type">
+          <mat-option value="WORKOUT"> <mat-icon>fitness_center</mat-icon> Workout </mat-option>
+          <mat-option value="REST_DAY"> <mat-icon>hotel</mat-icon> Rest Day </mat-option>
+          <mat-option value="DRINK_WATER">
+            <mat-icon>local_drink</mat-icon> Drink Water
+          </mat-option>
+          <mat-option value="WEIGH_IN"> <mat-icon>monitor_weight</mat-icon> Weigh In </mat-option>
+          <mat-option value="MEAL_LOG"> <mat-icon>restaurant</mat-icon> Meal Log </mat-option>
+          <mat-option value="BEDTIME"> <mat-icon>bedtime</mat-icon> Bedtime </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button type="submit" mat-raised-button color="primary" [disabled]="newForm.invalid">
+        <mat-icon>add</mat-icon>
+        Add Reminder
+      </button>
+    </form>
+  </div>
+</mat-card>

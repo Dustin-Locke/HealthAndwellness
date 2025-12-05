@@ -1,0 +1,58 @@
+/* ---------- Modal header ---------- */
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* ---------- Modal body / steps ---------- */
+.modal-step {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-step p {
+  margin: 0 0 8px 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* Material form-fields full width */
+.full {
+  width: 100%;
+}
+
+/* ---------- Modal footer / actions ---------- */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+/* Optional: Error text styling */
+.error {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .modal {
+    padding: 20px;
+  }
+}
+

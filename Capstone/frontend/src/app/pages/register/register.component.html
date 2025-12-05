@@ -1,0 +1,139 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Create Your Profile</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+        <input matInput class="input" [(ngModel)]="firstName" name="firstName" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <input matInput class="input" [(ngModel)]="lastName" name="lastName" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput class="input" [(ngModel)]="email" name="email" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput class="input" type="password" [(ngModel)]="password" name="password" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Date of Birth</mat-label>
+        <input matInput class="input" type="date" [(ngModel)]="dob" name="dob" />
+      </mat-form-field>
+
+      <div class="row">
+        <mat-form-field appearance="outline">
+          <mat-label>Height (ft)</mat-label>
+          <input matInput class="input" type="number" [(ngModel)]="heightFt" name="heightFt" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>in</mat-label>
+          <input matInput class="input" type="number" [(ngModel)]="heightIn" name="heightIn" />
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <mat-form-field appearance="outline">
+          <mat-label>Initial Weight (lb)</mat-label>
+          <input
+            matInput
+            class="input"
+            type="number"
+            [(ngModel)]="initialWeight"
+            name="initialWeight"
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Goal Weight (lb)</mat-label>
+          <input matInput class="input" type="number" [(ngModel)]="goalWeight" name="goalWeight" />
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="errorMsg" style="color: #ef4444">{{ errorMsg }}</div>
+
+      <div class="row" style="margin-top: 12px">
+        <button matButton="filled" type="button" routerLink="/login">Cancel</button>
+        <button matButton="outlined" type="button" (click)="clear()">Clear</button>
+        <button matButton="filled" type="submit">Continue</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<app-modal [show]="showVerifyModal" (close)="closeModal()">
+
+  <!-- ---------- MODAL HEADER ---------- -->
+  <div modal-header>
+    <h2 id="modal-title" class="modal-title">
+      <mat-icon>mail</mat-icon>
+      Verify Your Email
+    </h2>
+  </div>
+
+  <!-- ---------- MODAL BODY (steps) ---------- -->
+  <div class="modal-step">
+
+    <!-- STEP 1 — EDIT & CONFIRM EMAIL -->
+    <div *ngIf="step === 1">
+      <p>We will send a verification code to this email address.</p>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          type="email"
+          [(ngModel)]="tempEmail"
+          autocomplete="email"
+        />
+        <mat-icon matSuffix>mail</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- STEP 2 — ENTER VERIFICATION CODE -->
+    <div *ngIf="step === 2">
+      <p>We sent a code to <strong>{{ tempEmail }}</strong>.</p>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Verification Code</mat-label>
+        <input
+          matInput
+          #codeInput
+          type="text"
+          maxlength="6"
+          [(ngModel)]="verificationCode"
+        />
+        <mat-icon matSuffix>verified</mat-icon>
+      </mat-form-field>
+
+      <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+    </div>
+
+  </div>
+
+  <!-- ---------- MODAL ACTIONS ---------- -->
+  <div modal-actions>
+
+    <!-- Actions for STEP 1 -->
+    <ng-container *ngIf="step === 1">
+      <button mat-stroked-button (click)="showVerifyModal = false">Cancel</button>
+      <button mat-raised-button color="primary" (click)="confirmEmail()">Confirm</button>
+    </ng-container>
+
+    <!-- Actions for STEP 2 -->
+    <ng-container *ngIf="step === 2">
+      <button mat-stroked-button (click)="resendCode()">Resend Code</button>
+      <button mat-raised-button color="primary" (click)="verifyCode()">Submit Code</button>
+    </ng-container>
+
+  </div>
+
+</app-modal>
+
