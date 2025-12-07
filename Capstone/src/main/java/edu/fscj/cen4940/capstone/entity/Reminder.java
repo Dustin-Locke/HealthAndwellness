@@ -23,7 +23,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 @Entity
 @Table(name = "reminder")
 public class Reminder {
@@ -68,6 +70,8 @@ public class Reminder {
     @Column(name = "message", nullable = false)
     private String message;
 
+    @Column(name = "last_notified_period")
+    private String lastNotifiedPeriod;
 
     public Reminder() {}
 
@@ -139,5 +143,10 @@ public class Reminder {
         } else {
             this.message = message;
         }
+    }
+
+    public String getLastNotifiedPeriod() { return lastNotifiedPeriod; }
+    public void setLastNotifiedPeriod(String lastNotifiedPeriod) {
+        this.lastNotifiedPeriod = lastNotifiedPeriod;
     }
 }
