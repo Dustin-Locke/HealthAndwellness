@@ -34,9 +34,8 @@ jobs:
           cd Capstone
           mvn -B package
 
-      - name: Publish to GitHub Packages
+      - name: Build and Test
         run: |
           cd Capstone
-          mvn -B deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          mvn -B clean verify
+
