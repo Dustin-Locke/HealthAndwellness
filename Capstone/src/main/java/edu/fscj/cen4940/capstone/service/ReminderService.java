@@ -1,6 +1,7 @@
 package edu.fscj.cen4940.capstone.service;
 
 import edu.fscj.cen4940.capstone.dto.ReminderDTO;
+import edu.fscj.cen4940.capstone.dto.ReminderStatusDTO;
 import edu.fscj.cen4940.capstone.entity.Reminder;
 import edu.fscj.cen4940.capstone.entity.User;
 import edu.fscj.cen4940.capstone.enums.ReminderType;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.Optional;
 
@@ -134,6 +136,48 @@ public class ReminderService {
                 });
     }
 
+    public ReminderStatusDTO getReminderStatus(Reminder r) {
+        String period = r.getFrequency() != null ? r.getFrequency().name() : "ONCE";
+        ReminderStatusDTO dto = new ReminderStatusDTO(r.getId(), r.getLastNotified(), period);
+        dto.setLastNotifiedPeriod(r.getLastNotifiedPeriod());
+        return dto;
+    }
+
+
+
+    public boolean shouldSendToday(Reminder r, LocalDate today, LocalTime now) {
+        // Check lastNotified to avoid duplicates
+        if (r.getLastNotified() != null && r.getLastNotified().isEqual(today)) return false;
+
+        // Check time window
+        if (r.getNotifyTime().isAfter(now)) return false;
+
+        // Frequency logic
+        switch (r.getFrequency()) {
+            case DAILY:
+                if (r.getLastNotified() != null && r.getLastNotified().isEqual(today)) return false;
+                break;
+            case WEEKLY:
+                if (r.getLastNotified() != null && getWeekOfYear(r.getLastNotified()) == getWeekOfYear(today)) return false;
+                break;
+            case MONTHLY:
+                if (r.getLastNotified() != null &&
+                        r.getLastNotified().getMonth() == today.getMonth() &&
+                        r.getLastNotified().getYear() == today.getYear()) return false;
+                break;
+            case YEARLY:
+                if (r.getLastNotified() != null && r.getLastNotified().getYear() == today.getYear()) return false;
+                break;
+            case ONCE:
+                if (r.getLastNotified() != null) return false;
+                break;
+        }
+        return true;
+    }
+
+    int getWeekOfYear(LocalDate date) {
+        return date.get(WeekFields.ISO.weekOfWeekBasedYear());
+    }
 
     public void deleteById(Integer id) {
         if (!reminderRepository.existsById(id)) {

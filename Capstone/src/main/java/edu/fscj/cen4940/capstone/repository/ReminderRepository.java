@@ -17,6 +17,5 @@ public interface ReminderRepository extends JpaRepository<Reminder, Integer> {
     List<Reminder> findByUserIdAndEnabledTrue(Integer userId);
     List<Reminder> findByUserIdAndType(Integer userId, ReminderType type);
     List<Reminder> findByUserIdAndEnabledTrueAndNotifyTimeAfter(Integer userId, LocalTime time);
-
-
+    List<Reminder> findByEnabledTrue();
 }

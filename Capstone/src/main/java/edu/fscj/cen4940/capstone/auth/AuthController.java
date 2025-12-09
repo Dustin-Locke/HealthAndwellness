@@ -108,6 +108,12 @@ public class AuthController {
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest req) throws Exception {
         User user = userService.searchByEmail(req.email().toLowerCase());
 
+        // If user doesn't exist, immediately return 401
+        if (user == null) {
+            return ResponseEntity.status(401)
+                    .body(new AuthResponse(false, "Invalid credentials", null, null, null));
+        }
+
         if (user.getAccountLockedTime() != null && user.getAccountLockedTime().isAfter(LocalDateTime.now())) {
             System.out.println("Account is locked for " + user.getEmail() + ".");
             // reset lockout timer
